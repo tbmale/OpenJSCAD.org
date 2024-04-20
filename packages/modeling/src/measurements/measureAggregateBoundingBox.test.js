@@ -1,5 +1,6 @@
 const test = require('ava')
 
+const {pack} = require('msgpackr')
 const { cube } = require('../primitives')
 const measureAggregateBoundingBox = require('./measureAggregateBoundingBox')
 const measureBoundingBox = require('./measureBoundingBox')
@@ -27,9 +28,9 @@ test('measureAggregateBoundingBox (multiple objects) does not change original bo
   const cube1 = cube({ size: 4, center: [4, 10, 20] })
   const cube2 = cube({ size: 6, center: [0, 20, 20] })
 
-  const objectBoundsBefore = JSON.stringify(measureBoundingBox(cube1, cube2))
+  const objectBoundsBefore = pack(measureBoundingBox(cube1, cube2))
   measureAggregateBoundingBox(cube1, cube2)
-  const objectBoundsAfter = JSON.stringify(measureBoundingBox(cube1, cube2))
+  const objectBoundsAfter = pack(measureBoundingBox(cube1, cube2))
 
   t.is(objectBoundsBefore, objectBoundsAfter, 'Individual object bounds were not changed by the operation.')
 })

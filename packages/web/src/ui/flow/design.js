@@ -6,9 +6,11 @@ const { getParameterValuesFromUIControls } = require('@jscad/core').parameters
 
 const { fetchUriParams, getAllUriParams } = require('../../utils/urlUtils')
 
+const {pack} = require('msgpackr')
+
 const reducers = require('./reducers')
 
-const jsonCompare = (first, second) => JSON.stringify(first) === JSON.stringify(second)
+const jsonCompare = (first, second) => pack(first) === pack(second)
 
 const actions = ({ sources }) => {
   const initialize$ = most.just({})

@@ -1,6 +1,7 @@
 const most = require('most')
 
 const { holdUntil, withLatestFrom } = require('../../most-utils')
+const {pack} = require('msgpackr')
 
 const reducers = {
   initialize: (state) => {
@@ -41,7 +42,7 @@ const actions = ({ sources }) => {
   const requestGetLanguageData$ = sources.state
     .filter((state) => state.languages && state.languages.active !== undefined)
     .map((state) => state.languages.active)
-    .skipRepeatsWith((state, previousState) => JSON.stringify(state) === JSON.stringify(previousState))
+    .skipRepeatsWith((state, previousState) => pack(state) === pack(previousState))
     .map((data) => ({ type: 'changeSettings', data, sink: 'i18n' }))
 
   // set the list of available languages in the app

@@ -1,4 +1,5 @@
 const callbackToObservable = require('../../most-utils/callbackToObservable')
+const {pack,unpack} = require('msgpackr')
 
 const makeStorageSideEffect = ({ name }) => {
   const reply = callbackToObservable()
@@ -20,10 +21,10 @@ const makeStorageSideEffect = ({ name }) => {
           const { type, key, data } = command
           // const storage = target === `local` ? localStorage : sessionStorage
           if (type === 'write') {
-            localStorage.setItem(`jscad:${name}-${key}`, JSON.stringify(data))
+            localStorage.setItem(`jscad:${name}-${key}`, pack(data))
           } else if (type === 'read') {
             const settings = localStorage.getItem(`jscad:${name}-${key}`)
-            const allData = JSON.parse(settings) || {}
+            const allData = unpack(settings) || {}
             reply.callback({ type, key, data: allData })
           }
         })

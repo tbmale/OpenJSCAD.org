@@ -2,6 +2,7 @@ const { getFileExtensionFromString } = require('@jscad/core').utils
 
 const callbackToObservable = require('../../most-utils/callbackToObservable')
 const makeLogger = require('../../utils/logger')
+const {pack,unpack} = require('msgpackr')
 
 const makeDatSideEffect = async (params) => {
   const commandResponses = callbackToObservable()
@@ -89,7 +90,7 @@ const makeDatSideEffect = async (params) => {
           // hiearchyRoot.children = [...hiearchyRoot.children]
           const index = hiearchyRoot[0].children.findIndex((el) => el.fullPath === entry.fullPath)
           // FIXME: eeek !
-          hiearchyRoot = JSON.parse(JSON.stringify(hiearchyRoot))
+          hiearchyRoot = unpack(pack(hiearchyRoot))
           hiearchyRoot[0].children[index] = entry
 
           commandResponses.callback({ type: 'read', id: 'loadRemote', url: activeUrl, data: hiearchyRoot })

@@ -1,6 +1,7 @@
 const most = require('most')
 
 const callbackToObservable = require('../../most-utils/callbackToObservable')
+const {pack} = require('msgpackr')
 
 const makeState = (params) => {
   // const defaults = {
@@ -38,7 +39,7 @@ const makeState = (params) => {
       return foo
     }, initialState, commandResponses$)
       .startWith(initialState)
-      .skipRepeatsWith((state, previousState) => JSON.stringify(state) === JSON.stringify(previousState))
+      .skipRepeatsWith((state, previousState) => pack(state) === pack(previousState))
       .multicast()
   }
 

@@ -1,11 +1,12 @@
 const most = require('most')
 const { flatten } = require('@jscad/array-utils')
 const { proxy } = require('most-proxy')
+const {pack} = require('msgpackr')
 
 const makeActions = (sources) => {
   const { attach, stream } = proxy()
   sources.actions = stream
-    .skipRepeatsWith((state, previousState) => JSON.stringify(state) === JSON.stringify(previousState))
+    .skipRepeatsWith((state, previousState) => pack(state) === pack(previousState))
     .multicast()
 
   const toolActions = require('./tools')({ sources })
@@ -30,7 +31,7 @@ const makeActions = (sources) => {
     shortcutActions]
 
   const output$ = most.mergeArray(flatten(actions.map((actions) => Object.values(actions))))
-    .skipRepeatsWith((state, previousState) => JSON.stringify(state) === JSON.stringify(previousState))
+    .skipRepeatsWith((state, previousState) => pack(state) === pack(previousState))
     .multicast()
     .filter((x) => x !== undefined)
 

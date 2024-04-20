@@ -3,6 +3,7 @@ const path = require('path')
 const { applyParameterDefinitions } = require('@jscad/core').parameters
 const { makeFakeFs } = require('@jscad/core').loading
 const { getDesignEntryPoint, getDesignName } = require('@jscad/core').loading.requireDesignUtilsFs
+const {pack} = require('msgpackr')
 
 const { keep } = require('../../utils/object')
 const packageMetadata = require('../../../package.json')
@@ -263,8 +264,8 @@ const reducers = {
     if (!previousState.design) {
       return false
     }
-    const current = JSON.stringify(keep(designEqualityFields, state.design))
-    const previous = JSON.stringify(keep(designEqualityFields, previousState.design))
+    const current = pack(keep(designEqualityFields, state.design))
+    const previous = pack(keep(designEqualityFields, previousState.design))
     return previous === current
   },
 
@@ -274,8 +275,8 @@ const reducers = {
       return false
     }
     // do a JSON compare of the previous & current fields to save if needed
-    const current = JSON.stringify(keep(serializableFields, state.design))
-    const previous = JSON.stringify(keep(serializableFields, previousState.design))
+    const current = pack(keep(serializableFields, state.design))
+    const previous = pack(keep(serializableFields, previousState.design))
     return previous === current
   },
 
